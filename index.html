@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#E8F5E9">
+    <title>Horror In The City - Whitelist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F1F8E9; --card-bg: #ffffff; --green: #2E7D32;
+            --gold: #F9A825; --diamond: #29B6F6; --text: #1B1B1B;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'VT323', monospace; background: var(--bg);
+            background-image: radial-gradient(circle at 20% 10%, rgba(102,187,106,0.1) 0%, transparent 50%);
+            min-height: 100vh; color: var(--text); font-size: 18px; position: relative;
+        }
+        .watermark { position:fixed; bottom:10px; right:16px; font-family:'Silkscreen'; font-size:0.55rem; color:rgba(46,125,50,0.3); z-index:0; pointer-events: none; }
+        .app-container { max-width:900px; margin:0 auto; padding:20px; position:relative; z-index:1; }
+        .header { text-align:center; margin-bottom:16px; }
+        .grass-block-header {
+            display:inline-block;
+            background:linear-gradient(180deg, #81C784, #66BB6A 25%, #43A047 60%, #2E7D32);
+            padding:20px 32px; border-radius:8px; border:3px solid #1B5E20;
+            box-shadow:0 8px 0 #1B5E20; color:#fff;
+        }
+        .server-title { font-family:'Press Start 2P'; font-size:1.5rem; text-shadow:3px 3px 0 #1B5E20; }
+        .server-subtitle { font-family:'Silkscreen'; font-size:0.7rem; color:#FFD54F; }
+        .owner-badge { display:inline-flex; align-items:center; gap:6px; background:white; border:2px solid #B2DFDB; border-radius:50px; padding:10px 20px; margin-top:14px; text-decoration:none; color:#1B5E20; font-family:'Silkscreen'; font-size:0.7rem; }
+        .stats-row { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+        .stat-card { flex:1; min-width:100px; background:white; border:2px solid #C8E6C9; border-left:5px solid #66BB6A; border-radius:10px; padding:14px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.05); }
+        .stat-number { font-family:'Press Start 2P'; font-size:1.6rem; color:#1B5E20; }
+        .stat-label { font-family:'Silkscreen'; font-size:0.55rem; color:#777; }
+        .section-card { background:white; border:2px solid #B2DFDB; border-radius:12px; padding:24px; margin-bottom:18px; box-shadow:0 4px 8px rgba(0,0,0,0.05); }
+        .section-title { font-family:'Press Start 2P'; font-size:0.7rem; color:#2E7D32; margin-bottom:20px; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+        .form-group { display:flex; flex-direction:column; }
+        .full-width { grid-column:1/-1; }
+        .form-label { font-family:'Silkscreen'; font-size:0.6rem; color:#555; text-transform:uppercase; margin-bottom:4px; }
+        .form-input, .form-textarea { background:#F9FBE7; border:2px solid #DCEDC8; border-radius:6px; padding:10px 14px; font-family:'VT323'; font-size:1.1rem; outline:none; }
+        .form-input:focus, .form-textarea:focus { border-color:#66BB6A; box-shadow:0 0 10px rgba(102,187,106,0.4); }
+        .btn-minecraft { font-family:'Silkscreen'; font-size:0.7rem; letter-spacing:1px; text-transform:uppercase; padding:12px 28px; border:none; border-radius:6px; cursor:pointer; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.3); transition:0.2s; }
+        .btn-submit { background:linear-gradient(180deg, #81C784, #4CAF50 60%, #2E7D32); border-bottom:4px solid #1B5E20; }
+        .btn-submit:hover { background:linear-gradient(180deg, #A5D6A7, #66BB6A); }
+        .table-wrapper { overflow-x:auto; border-radius:8px; border:1px solid #DCEDC8; }
+        table { width:100%; border-collapse:collapse; min-width:700px; }
+        thead th { background:#E8F5E9; font-family:'Silkscreen'; font-size:0.55rem; color:#2E7D32; padding:12px; text-align:left; }
+        tbody td { padding:10px; border-bottom:1px solid #F0F4F0; }
+        tbody tr:nth-child(even) { background:#FAFAFA; }
+        .status-badge { display:inline-block; padding:4px 10px; border-radius:4px; font-family:'Silkscreen'; font-size:0.5rem; text-transform:uppercase; }
+        .status-pending { background:#FFF8E1; color:#F57F17; border:1px solid #FFB300; }
+        .status-approved { background:#E8F5E9; color:#2E7D32; border:1px solid #66BB6A; }
+        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; justify-content:center; align-items:center; }
+        .modal-content { background:white; max-width:500px; padding:24px; border-radius:12px; border:3px solid #2E7D32; }
+        @media (max-width:600px) { .form-grid { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <div class="watermark">🏰 Horror In The City · @miss_violent</div>
+    <div class="app-container">
+        <header class="header">
+            <div class="grass-block-header">
+                <h1 class="server-title">⚔️ HORROR IN<br>THE CITY ⚔️</h1>
+                <p class="server-subtitle">🔥 Minecraft Survival Horror SMP 🔥</p>
+            </div>
+            <br>
+            <a href="https://t.me/miss_violent" target="_blank" class="owner-badge">✈️ Owner: @miss_violent</a>
+        </header>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total</div></div>
+            <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-number" id="statApproved">0</div><div class="stat-label">Approved</div></div>
+        </div>
+        <div class="section-card">
+            <h2 class="section-title">📝 Submit Whitelist Request</h2>
+            <form id="whitelistForm">
+                <div class="form-grid">
+                    <div class="form-group"><label class="form-label">🎮 Minecraft IGN *</label><input type="text" id="ign" class="form-input" placeholder="Steve_Alex123" required maxlength="36"></div>
+                    <div class="form-group"><label class="form-label">💬 Discord *</label><input type="text" id="discord" class="form-input" placeholder="player#1234" required maxlength="64"></div>
+                    <div class="form-group"><label class="form-label">🎂 Age *</label><input type="number" id="age" class="form-input" placeholder="18" required min="1" max="120"></div>
+                    <div class="form-group"><label class="form-label">⏰ Playtime (per day)</label><input type="text" id="playtime" class="form-input" placeholder="3-4 hours" maxlength="32"></div>
+                    <div class="form-group full-width"><label class="form-label">📜 Why do you want to join? *</label><textarea id="reason" class="form-textarea" placeholder="Tell us why..." required maxlength="500"></textarea></div>
+                    <div class="form-group full-width"><input type="checkbox" id="agreePolicy" required> <label for="agreePolicy">I agree to the <span onclick="openPolicy()" style="color:#2E7D32;text-decoration:underline;cursor:pointer;">Server Rules & Privacy Policy</span></label></div>
+                    <div class="form-group full-width" style="text-align:center;"><button type="submit" class="btn-minecraft btn-submit">⛏️ Submit</button></div>
+                </div>
+            </form>
+        </div>
+        <div class="section-card">
+            <h2 class="section-title">📜 Whitelist Records <span style="font-size:0.5rem;color:#999;margin-left:auto;">📡 Live Update</span></h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>#</th><th>IGN</th><th>Discord</th><th>Age</th><th>Playtime</th><th>Reason</th><th>Date</th><th>Status</th></tr></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div id="emptyState" style="text-align:center;padding:40px;color:#999;display:none;"><span style="font-size:4rem;">🐷</span><br>No players yet!</div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="policyModal" onclick="closePolicy()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3>📜 Server Rules & Privacy</h3>
+            <ul><li>No griefing/hacking</li><li>Respect all players</li><li>Your data is stored securely</li></ul>
+            <button onclick="closePolicy()">Close</button>
+        </div>
+    </div>
+
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script>
+        // Firebase Config
+        firebase.initializeApp({
+            databaseURL: "https://horror-in-the-city-default-rtdb.firebaseio.com/"
+        });
+        var db = firebase.database();
+
+        // Apps Script URL (အဆင်သင့်ထည့်ပြီးသား)
+        var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPwy0DMG6A1Mu48gFyK2Hiw2bRtkSIEpzNoqnd15I04t9X1Fcwg1Smif4Ity-NEXXdNw/exec';
+
+        // Whitelist data real-time listener
+        db.ref('whitelist').on('value', function(snapshot) {
+            var data = [];
+            snapshot.forEach(function(child) {
+                data.push({ id: child.key, ...child.val() });
+            });
+            data.reverse();
+            renderTable(data);
+        });
+
+        function renderTable(data) {
+            var tbody = document.getElementById('tableBody');
+            var empty = document.getElementById('emptyState');
+            var wrapper = document.querySelector('.table-wrapper');
+            tbody.innerHTML = '';
+            if (data.length === 0) {
+                empty.style.display = 'block';
+                wrapper.style.display = 'none';
+            } else {
+                empty.style.display = 'none';
+                wrapper.style.display = 'block';
+                data.forEach(function(item, idx) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML =
+                        '<td>' + (idx+1) + '</td>' +
+                        '<td><strong>' + escapeHtml(item.ign) + '</strong></td>' +
+                        '<td>' + escapeHtml(item.discord) + '</td>' +
+                        '<td>' + escapeHtml(item.age) + '</td>' +
+                        '<td>' + escapeHtml(item.playtime || '-') + '</td>' +
+                        '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;cursor:pointer" title="' + escapeHtml(item.reason) + '">' + escapeHtml(item.reason.substring(0,35)) + (item.reason.length>35?'…':'') + '</td>' +
+                        '<td>' + new Date(item.timestamp).toLocaleString() + '</td>' +
+                        '<td><span class="status-badge status-' + item.status + '">' + item.status + '</span></td>';
+                    tbody.appendChild(tr);
+                });
+            }
+            document.getElementById('statTotal').textContent = data.length;
+            document.getElementById('statPending').textContent = data.filter(function(i){ return i.status === 'pending'; }).length;
+            document.getElementById('statApproved').textContent = data.filter(function(i){ return i.status === 'approved'; }).length;
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Form submit
+        document.getElementById('whitelistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var ign = document.getElementById('ign').value.trim();
+            var discord = document.getElementById('discord').value.trim();
+            var age = document.getElementById('age').value;
+            var playtime = document.getElementById('playtime').value.trim();
+            var reason = document.getElementById('reason').value.trim();
+            if (!ign || !discord || !age || !reason) return alert('Please fill all required fields');
+            if (!document.getElementById('agreePolicy').checked) return alert('You must agree to the rules');
+
+            fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ ign: ign, discord: discord, age: age, playtime: playtime, reason: reason })
+            })
+            .then(function(res) { return res.text(); })
+            .then(function() {
+                alert('✅ Whitelist submitted successfully!');
+                document.getElementById('whitelistForm').reset();
+            })
+            .catch(function(err) {
+                alert('❌ Error submitting whitelist');
+                console.error(err);
+            });
+        });
+
+        window.openPolicy = function() { document.getElementById('policyModal').style.display = 'flex'; };
+        window.closePolicy = function() { document.getElementById('policyModal').style.display = 'none'; };
+    </script>
+</body>
+</html>
